@@ -1,201 +1,77 @@
+import { useState } from 'react';
 import styles from './index.module.css';
 
 const Home = () => {
+  const [turnColor, setTurnColor] = useState(1);
+  const [board, setBoard] = useState([
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 1, 2, 0, 0, 0],
+    [0, 0, 0, 2, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+  ]);
+  //
+  const directions = [
+    [-1, -1],
+    [0, -1],
+    [1, -1],
+    [1, 0],
+    [1, 1],
+    [0, 1],
+    [-1, 1],
+    [-1, 0],
+  ];
+  //
+  const onClick = (x: number, y: number) => {
+    console.log(x, y);
+    const newBoard: number[][] = JSON.parse(JSON.stringify(board));
+
+    //周囲一マスに違う色の駒が無いと置けない 一行目は押した場所に駒があるかどうか
+    if (board[y][x] === 0) {
+      for (let t = 0; t < directions.length; t++) {
+        console.log(Math.max(x + directions[t][1], 0), Math.max(y + directions[t][0], 0));
+        if (
+          board[Math.min(Math.max(y + directions[t][0], 0), 7)][
+            Math.max(x + directions[t][1], 0)
+          ] !== undefined &&
+          board[Math.min(Math.max(y + directions[t][0], 0), 7)][
+            Math.max(x + directions[t][1], 0)
+          ] !== 0 &&
+          board[Math.min(Math.max(y + directions[t][0], 0), 7)][
+            Math.max(x + directions[t][1], 0)
+          ] !== turnColor
+        ) {
+          newBoard[y][x] = turnColor;
+          setTurnColor(3 - turnColor);
+        }
+      }
+      //
+      //if (board[y + 1] !== undefined && board[y + 1][x] !== 0 && board[y + 1][x] !== turnColor) {
+      //  newBoard[y][x] = turnColor;
+      //  setTurnColor(3 - turnColor);
+      //}
+
+      setBoard(newBoard);
+    }
+  };
   return (
     <div className={styles.container}>
       <div className={styles.board}>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
-        <div className={styles.cell}>
-          <div className={styles.stone} />
-        </div>
+        {board.map((row, y) =>
+          row.map((color, x) => (
+            <div className={styles.cell} key={`${x}-${y}`} onClick={() => onClick(x, y)}>
+              {color !== 0 && (
+                <div
+                  className={styles.stone}
+                  style={{ background: color === 1 ? '#000' : '#fff' }}
+                />
+              )}
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
