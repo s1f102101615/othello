@@ -3,6 +3,9 @@ import styles from './index.module.css';
 
 const Home = () => {
   const [turnColor, setTurnColor] = useState(1);
+  const [blackCount, setBlackCount] = useState(2);
+  const [whiteCount, setWhiteCount] = useState(2);
+  const [pass, setPass] = useState(1);
   const [board, setBoard] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -25,7 +28,8 @@ const Home = () => {
     [-1, 0],
   ];
   //
-
+  let blackcount = 0;
+  let whitecount = 0;
   const onClick = (x: number, y: number) => {
     const newBoard: number[][] = JSON.parse(JSON.stringify(board));
     //周囲一マスに違う色の駒が無いと置けない 一行目は押した場所に駒があるかどうか
@@ -81,13 +85,13 @@ const Home = () => {
                     if (
                       newBoard[tate + d[0] * p] === undefined ||
                       newBoard[tate + d[0] * p][yoko + d[1] * p] === undefined ||
+                      newBoard[tate + d[0] * p][yoko + d[1] * p] === 3 ||
                       newBoard[tate + d[0] * p][yoko + d[1] * p] === 0
                     ) {
                       break;
                     }
                     if (newBoard[tate + d[0] * p][yoko + d[1] * p] === enemyColor) {
                       newBoard[tate][yoko] = 3;
-                      console.log(tate, yoko, 'aaaaaaaaaaaaaaa');
                     }
                     setBoard(newBoard);
                   }
@@ -99,6 +103,7 @@ const Home = () => {
       }
       if (!newBoard.some((row) => row.includes(3))) {
         console.log('パスです');
+        setPass(2);
         setBoard(newBoard);
         setTurnColor(turnColor);
         for (let tate = 0; tate < 8; tate++) {
@@ -134,6 +139,16 @@ const Home = () => {
           }
         }
       }
+      window.setTimeout(function () {
+        setPass(1);
+      }, 3000);
+      for (let p = 0; p < 8; p++) {
+        blackcount += newBoard[p].filter((element) => element === 1).length;
+        whitecount += newBoard[p].filter((element) => element === 2).length;
+      }
+      setBlackCount(blackcount);
+      setWhiteCount(whitecount);
+
       if (!newBoard.some((row) => row.includes(3))) {
         console.log('試合終了');
       }
@@ -144,8 +159,17 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
-      <h1>{turnColor === 1 ? 'black' : 'white'}</h1>
+      <a className={styles.turn}>現在{turnColor === 1 ? '黒' : '白'}のターンです</a>
+      <div className={styles.black}>
+        <a className={styles.blackname}>黒{blackCount}個</a>
+      </div>
+      <div className={styles.white}>
+        <a className={styles.whitename}>白{whiteCount}個</a>
+      </div>
       <div className={styles.board}>
+        <div className={styles.pass} style={{ opacity: pass === 2 ? 1 : 0 }}>
+          <h1>パス</h1>
+        </div>
         {board.map((row, y) =>
           row.map((color, x) => (
             <div className={styles.cell} key={`${x}-${y}`} onClick={() => onClick(x, y)}>

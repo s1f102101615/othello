@@ -122,6 +122,8 @@
   background: rgb(1 124 1);
   display: flex;
   flex-flow: wrap row;
+  z-index: 0;
+  position: absolute;
 }
 
 .cell {
@@ -139,4 +141,55 @@
   width: 60px;
   background: rgb(255 255 255);
   border-radius: 90%;
+}
+
+.black {
+  height: 120px;
+  width: 120px;
+  background: rgb(1 1 1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  position: absolute;
+  top: 680px;
+  left: 1400px;
+}
+
+.blackname {
+  color: rgb(255 255 255);
+  z-index: 1;
+}
+
+.white {
+  height: 120px;
+  width: 120px;
+  background: rgb(255 255 255);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid black;
+  z-index: 1;
+  top: 16%;
+  left: 400px;
+  position: absolute;
+}
+
+.whitename {
+  color: rgb(0 0 0);
+  z-index: 3;
+  top: 160px;
+  left: 400px;
+}
+
+.pass {
+  position: absolute;
+  color: rgb(255 0 0);
+  z-index: 1;
+}
+
+.turn {
+  position: absolute;
+  z-index: 1;
+  top: 100px;
 }
