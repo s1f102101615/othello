@@ -25,10 +25,12 @@ const Home = () => {
     [-1, 0],
   ];
   //
+  const passCount1 = 0;
+  const passCount2 = 0;
+  let passCount = 0;
+
   const onClick = (x: number, y: number) => {
-    console.log(x, y);
     const newBoard: number[][] = JSON.parse(JSON.stringify(board));
-    console.log(turnColor);
     //周囲一マスに違う色の駒が無いと置けない 一行目は押した場所に駒があるかどうか
     if (board[y][x] === 3) {
       for (let t = 0; t < directions.length; t++) {
@@ -46,14 +48,18 @@ const Home = () => {
           if (
             board[Math.min(Math.max(y + directions[t][0], 0), 7)][
               Math.max(x + directions[t][1], 0)
-            ] !== turnColor
+            ] !== turnColor &&
+            board[Math.min(Math.max(y + directions[t][0], 0), 7)][
+              Math.max(x + directions[t][1], 0)
+            ] !== 3
           ) {
             let turn = 2;
             for (let p = 2; p < 8; p++) {
               if (
                 board[y + directions[t][0] * p] === undefined ||
                 board[x + directions[t][1] * p] === undefined ||
-                board[y + directions[t][0] * p][x + directions[t][1] * p] === 0
+                board[y + directions[t][0] * p][x + directions[t][1] * p] === 0 ||
+                board[y + directions[t][0] * p][x + directions[t][1] * p] === 3
               ) {
                 break;
               }
@@ -67,7 +73,7 @@ const Home = () => {
                 setTurnColor(3 - turnColor);
                 setBoard(newBoard);
                 //処理完了(予測開始)
-                console.log(enemyColor);
+
                 for (let tate = 0; tate < 8; tate++) {
                   for (let yoko = 0; yoko < 8; yoko++) {
                     if (newBoard[tate][yoko] === 3) {
@@ -110,6 +116,7 @@ const Home = () => {
                                 ] === enemyColor
                               ) {
                                 newBoard[tate][yoko] = 3;
+                                passCount = 1;
                               }
                               setBoard(newBoard);
                             }
@@ -118,6 +125,65 @@ const Home = () => {
                       }
                     }
                   }
+                }
+                console.log(passCount);
+                if (passCount === 0) {
+                  console.log('パスです');
+                  setBoard(newBoard);
+                  setTurnColor(turnColor);
+                  for (let tate = 0; tate < 8; tate++) {
+                    for (let yoko = 0; yoko < 8; yoko++) {
+                      if (newBoard[tate][yoko] === 3) {
+                        newBoard[tate][yoko] = 0;
+                      }
+                      if (newBoard[tate][yoko] === 0) {
+                        for (let t = 0; t < directions.length; t++) {
+                          if (
+                            newBoard[Math.min(Math.max(tate + directions[t][0], 0), 7)][
+                              Math.max(yoko + directions[t][1], 0)
+                            ] !== undefined &&
+                            newBoard[Math.min(Math.max(tate + directions[t][0], 0), 7)][
+                              Math.max(yoko + directions[t][1], 0)
+                            ] !== 0 &&
+                            newBoard[Math.min(Math.max(tate + directions[t][0], 0), 7)][
+                              Math.max(yoko + directions[t][1], 0)
+                            ] !== turnColor &&
+                            newBoard[Math.min(Math.max(tate + directions[t][0], 0), 7)][
+                              Math.max(yoko + directions[t][1], 0)
+                            ] !== 3
+                          ) {
+                            if (
+                              newBoard[Math.min(Math.max(tate + directions[t][0], 0), 7)][
+                                Math.max(yoko + directions[t][1], 0)
+                              ] !== turnColor
+                            ) {
+                              for (let p = 2; p < 8; p++) {
+                                if (
+                                  newBoard[tate + directions[t][0] * p] === undefined ||
+                                  newBoard[yoko + directions[t][1] * p] === undefined ||
+                                  newBoard[tate + directions[t][0] * p][
+                                    yoko + directions[t][1] * p
+                                  ] === 0
+                                ) {
+                                  break;
+                                }
+                                if (
+                                  newBoard[tate + directions[t][0] * p][
+                                    yoko + directions[t][1] * p
+                                  ] === turnColor
+                                ) {
+                                  newBoard[tate][yoko] = 3;
+                                  passCount = 1;
+                                }
+                                setBoard(newBoard);
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                  break;
                 }
               }
               turn++;
@@ -139,7 +205,11 @@ const Home = () => {
               {color !== 0 && (
                 <div
                   className={styles.stone}
-                  style={{ background: color === 1 ? '#000' : color === 3 ? '#ccff00' : '#fff' }}
+                  style={{
+                    background: color === 1 ? '#000' : color === 3 ? '#ccff00' : '#fff',
+                    width: color === 3 ? '20%' : '90%',
+                    height: color === 3 ? '20%' : '90%',
+                  }}
                 />
               )}
             </div>
