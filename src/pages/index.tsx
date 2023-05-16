@@ -25,171 +25,117 @@ const Home = () => {
     [-1, 0],
   ];
   //
-  const passCount1 = 0;
-  const passCount2 = 0;
-  let passCount = 0;
 
   const onClick = (x: number, y: number) => {
     const newBoard: number[][] = JSON.parse(JSON.stringify(board));
     //周囲一マスに違う色の駒が無いと置けない 一行目は押した場所に駒があるかどうか
     if (board[y][x] === 3) {
-      for (let t = 0; t < directions.length; t++) {
+      for (const d of directions) {
         if (
-          board[Math.min(Math.max(y + directions[t][0], 0), 7)][
-            Math.max(x + directions[t][1], 0)
-          ] !== undefined &&
-          board[Math.min(Math.max(y + directions[t][0], 0), 7)][
-            Math.max(x + directions[t][1], 0)
-          ] !== 0 &&
-          board[Math.min(Math.max(y + directions[t][0], 0), 7)][
-            Math.max(x + directions[t][1], 0)
-          ] !== turnColor
+          board[y + d[0]] !== undefined &&
+          board[y + d[0]][x + d[1]] !== undefined &&
+          board[y + d[0]][x + d[1]] !== 0 &&
+          board[y + d[0]][x + d[1]] !== turnColor
         ) {
-          if (
-            board[Math.min(Math.max(y + directions[t][0], 0), 7)][
-              Math.max(x + directions[t][1], 0)
-            ] !== turnColor &&
-            board[Math.min(Math.max(y + directions[t][0], 0), 7)][
-              Math.max(x + directions[t][1], 0)
-            ] !== 3
-          ) {
+          if (board[y + d[0]][x + d[1]] !== turnColor && board[y + d[0]][x + d[1]] !== 3) {
             let turn = 2;
             for (let p = 2; p < 8; p++) {
               if (
-                board[y + directions[t][0] * p] === undefined ||
-                board[x + directions[t][1] * p] === undefined ||
-                board[y + directions[t][0] * p][x + directions[t][1] * p] === 0 ||
-                board[y + directions[t][0] * p][x + directions[t][1] * p] === 3
+                board[y + d[0] * p] === undefined ||
+                board[y + d[0] * p][x + d[1] * p] === undefined ||
+                board[y + d[0] * p][x + d[1] * p] === 0 ||
+                board[y + d[0] * p][x + d[1] * p] === 3
               ) {
                 break;
               }
-              if (board[y + directions[t][0] * p][x + directions[t][1] * p] === turnColor) {
+              if (board[y + d[0] * p][x + d[1] * p] === turnColor) {
                 newBoard[y][x] = turnColor;
                 for (let now = 1; now < turn; now++) {
-                  newBoard[y + directions[t][0] * (p - now)][x + directions[t][1] * (p - now)] =
-                    turnColor;
-                }
-                const enemyColor = 3 - turnColor;
-                setTurnColor(3 - turnColor);
-                setBoard(newBoard);
-                //処理完了(予測開始)
-
-                for (let tate = 0; tate < 8; tate++) {
-                  for (let yoko = 0; yoko < 8; yoko++) {
-                    if (newBoard[tate][yoko] === 3) {
-                      newBoard[tate][yoko] = 0;
-                    }
-                    if (newBoard[tate][yoko] === 0) {
-                      for (let t = 0; t < directions.length; t++) {
-                        if (
-                          newBoard[Math.min(Math.max(tate + directions[t][0], 0), 7)][
-                            Math.max(yoko + directions[t][1], 0)
-                          ] !== undefined &&
-                          newBoard[Math.min(Math.max(tate + directions[t][0], 0), 7)][
-                            Math.max(yoko + directions[t][1], 0)
-                          ] !== 0 &&
-                          newBoard[Math.min(Math.max(tate + directions[t][0], 0), 7)][
-                            Math.max(yoko + directions[t][1], 0)
-                          ] !== enemyColor &&
-                          newBoard[Math.min(Math.max(tate + directions[t][0], 0), 7)][
-                            Math.max(yoko + directions[t][1], 0)
-                          ] !== 3
-                        ) {
-                          if (
-                            newBoard[Math.min(Math.max(tate + directions[t][0], 0), 7)][
-                              Math.max(yoko + directions[t][1], 0)
-                            ] !== enemyColor
-                          ) {
-                            for (let p = 2; p < 8; p++) {
-                              if (
-                                newBoard[tate + directions[t][0] * p] === undefined ||
-                                newBoard[yoko + directions[t][1] * p] === undefined ||
-                                newBoard[tate + directions[t][0] * p][
-                                  yoko + directions[t][1] * p
-                                ] === 0
-                              ) {
-                                break;
-                              }
-                              if (
-                                newBoard[tate + directions[t][0] * p][
-                                  yoko + directions[t][1] * p
-                                ] === enemyColor
-                              ) {
-                                newBoard[tate][yoko] = 3;
-                                passCount = 1;
-                              }
-                              setBoard(newBoard);
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-                console.log(passCount);
-                if (passCount === 0) {
-                  console.log('パスです');
-                  setBoard(newBoard);
-                  setTurnColor(turnColor);
-                  for (let tate = 0; tate < 8; tate++) {
-                    for (let yoko = 0; yoko < 8; yoko++) {
-                      if (newBoard[tate][yoko] === 3) {
-                        newBoard[tate][yoko] = 0;
-                      }
-                      if (newBoard[tate][yoko] === 0) {
-                        for (let t = 0; t < directions.length; t++) {
-                          if (
-                            newBoard[Math.min(Math.max(tate + directions[t][0], 0), 7)][
-                              Math.max(yoko + directions[t][1], 0)
-                            ] !== undefined &&
-                            newBoard[Math.min(Math.max(tate + directions[t][0], 0), 7)][
-                              Math.max(yoko + directions[t][1], 0)
-                            ] !== 0 &&
-                            newBoard[Math.min(Math.max(tate + directions[t][0], 0), 7)][
-                              Math.max(yoko + directions[t][1], 0)
-                            ] !== turnColor &&
-                            newBoard[Math.min(Math.max(tate + directions[t][0], 0), 7)][
-                              Math.max(yoko + directions[t][1], 0)
-                            ] !== 3
-                          ) {
-                            if (
-                              newBoard[Math.min(Math.max(tate + directions[t][0], 0), 7)][
-                                Math.max(yoko + directions[t][1], 0)
-                              ] !== turnColor
-                            ) {
-                              for (let p = 2; p < 8; p++) {
-                                if (
-                                  newBoard[tate + directions[t][0] * p] === undefined ||
-                                  newBoard[yoko + directions[t][1] * p] === undefined ||
-                                  newBoard[tate + directions[t][0] * p][
-                                    yoko + directions[t][1] * p
-                                  ] === 0
-                                ) {
-                                  break;
-                                }
-                                if (
-                                  newBoard[tate + directions[t][0] * p][
-                                    yoko + directions[t][1] * p
-                                  ] === turnColor
-                                ) {
-                                  newBoard[tate][yoko] = 3;
-                                  passCount = 1;
-                                }
-                                setBoard(newBoard);
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                  break;
+                  newBoard[y + d[0] * (p - now)][x + d[1] * (p - now)] = turnColor;
                 }
               }
               turn++;
             }
           }
         }
+      }
+      const enemyColor = 3 - turnColor;
+      setTurnColor(3 - turnColor);
+      setBoard(newBoard);
+      //処理完了(予測開始)
+
+      for (let tate = 0; tate < 8; tate++) {
+        for (let yoko = 0; yoko < 8; yoko++) {
+          if (newBoard[tate][yoko] === 3) {
+            newBoard[tate][yoko] = 0;
+          }
+          if (newBoard[tate][yoko] === 0) {
+            for (const d of directions) {
+              if (
+                newBoard[tate + d[0]] !== undefined &&
+                newBoard[tate + d[0]][yoko + d[1]] !== undefined &&
+                newBoard[tate + d[0]][yoko + d[1]] === 3 - enemyColor
+              ) {
+                if (newBoard[tate + d[0]][yoko + d[1]] !== enemyColor) {
+                  for (let p = 2; p < 8; p++) {
+                    if (
+                      newBoard[tate + d[0] * p] === undefined ||
+                      newBoard[tate + d[0] * p][yoko + d[1] * p] === undefined ||
+                      newBoard[tate + d[0] * p][yoko + d[1] * p] === 0
+                    ) {
+                      break;
+                    }
+                    if (newBoard[tate + d[0] * p][yoko + d[1] * p] === enemyColor) {
+                      newBoard[tate][yoko] = 3;
+                      console.log(tate, yoko, 'aaaaaaaaaaaaaaa');
+                    }
+                    setBoard(newBoard);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      if (!newBoard.some((row) => row.includes(3))) {
+        console.log('パスです');
+        setBoard(newBoard);
+        setTurnColor(turnColor);
+        for (let tate = 0; tate < 8; tate++) {
+          for (let yoko = 0; yoko < 8; yoko++) {
+            if (newBoard[tate][yoko] === 3) {
+              newBoard[tate][yoko] = 0;
+            }
+            if (newBoard[tate][yoko] === 0) {
+              for (const d of directions) {
+                if (
+                  newBoard[tate + d[0]] !== undefined &&
+                  newBoard[tate + d[0]][yoko + d[1]] !== undefined &&
+                  newBoard[tate + d[0]][yoko + d[1]] === 3 - turnColor
+                ) {
+                  if (newBoard[tate + d[0]][yoko + d[1]] !== turnColor) {
+                    for (let p = 2; p < 8; p++) {
+                      if (
+                        newBoard[tate + d[0] * p] === undefined ||
+                        newBoard[tate + d[0] * p][yoko + d[1] * p] === undefined ||
+                        newBoard[tate + d[0] * p][yoko + d[1] * p] === 0
+                      ) {
+                        break;
+                      }
+                      if (newBoard[tate + d[0] * p][yoko + d[1] * p] === turnColor) {
+                        newBoard[tate][yoko] = 3;
+                      }
+                      setBoard(newBoard);
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      if (!newBoard.some((row) => row.includes(3))) {
+        console.log('試合終了');
       }
 
       setBoard(newBoard);
@@ -198,6 +144,7 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
+      <h1>{turnColor === 1 ? 'black' : 'white'}</h1>
       <div className={styles.board}>
         {board.map((row, y) =>
           row.map((color, x) => (
