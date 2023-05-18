@@ -5,7 +5,6 @@ const Home = () => {
   const [turnColor, setTurnColor] = useState(1);
   const [blackCount, setBlackCount] = useState(2);
   const [whiteCount, setWhiteCount] = useState(2);
-  const [pass, setPass] = useState(1);
   const [board, setBoard] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -27,12 +26,15 @@ const Home = () => {
     [-1, 1],
     [-1, 0],
   ];
-  //
+
+  let passgage = 1;
   let blackcount = 0;
   let whitecount = 0;
+  let end = false;
   const onClick = (x: number, y: number) => {
     const newBoard: number[][] = JSON.parse(JSON.stringify(board));
-    //周囲一マスに違う色の駒が無いと置けない 一行目は押した場所に駒があるかどうか
+
+    //置く処理
     if (board[y][x] === 3) {
       for (const d of directions) {
         if (
@@ -61,11 +63,14 @@ const Home = () => {
               turn++;
             }
           }
+          if (passgage === 0) {
+            alert('パスです');
+            passgage = 1;
+          }
         }
       }
       const enemyColor = 3 - turnColor;
       setTurnColor(3 - turnColor);
-      setBoard(newBoard);
       //処理完了(予測開始)
 
       for (let tate = 0; tate < 8; tate++) {
@@ -93,7 +98,6 @@ const Home = () => {
                     if (newBoard[tate + d[0] * p][yoko + d[1] * p] === enemyColor) {
                       newBoard[tate][yoko] = 3;
                     }
-                    setBoard(newBoard);
                   }
                 }
               }
@@ -101,10 +105,24 @@ const Home = () => {
           }
         }
       }
-      if (!newBoard.some((row) => row.includes(3))) {
-        console.log('パスです');
-        setPass(2);
-        setBoard(newBoard);
+      if (!newBoard.some((row) => row.includes(0)) && !newBoard.some((row) => row.includes(3))) {
+        window.setTimeout(function () {
+          alert(
+            `試合終了  黒${blackcount} 対  白${whitecount}  ${
+              blackcount === whitecount
+                ? ' 引き分けです。'
+                : blackcount > whitecount
+                ? '黒の勝ちです。'
+                : '白の勝ちです。'
+            }`
+          );
+          end = true;
+        }, 10);
+      }
+      if (!newBoard.some((row) => row.includes(3)) && newBoard.some((row) => row.includes(0))) {
+        window.setTimeout(function () {
+          alert(`パスです、もう一度${turnColor === 2 ? '白' : '黒'}のターンになります。`);
+        }, 10);
         setTurnColor(turnColor);
         for (let tate = 0; tate < 8; tate++) {
           for (let yoko = 0; yoko < 8; yoko++) {
@@ -130,7 +148,6 @@ const Home = () => {
                       if (newBoard[tate + d[0] * p][yoko + d[1] * p] === turnColor) {
                         newBoard[tate][yoko] = 3;
                       }
-                      setBoard(newBoard);
                     }
                   }
                 }
@@ -139,18 +156,26 @@ const Home = () => {
           }
         }
       }
-      window.setTimeout(function () {
-        setPass(1);
-      }, 3000);
       for (let p = 0; p < 8; p++) {
         blackcount += newBoard[p].filter((element) => element === 1).length;
         whitecount += newBoard[p].filter((element) => element === 2).length;
       }
       setBlackCount(blackcount);
       setWhiteCount(whitecount);
-
-      if (!newBoard.some((row) => row.includes(3))) {
-        console.log('試合終了');
+      if (end) {
+        if (!newBoard.some((row) => row.includes(3))) {
+          window.setTimeout(function () {
+            alert(
+              `試合終了  黒${blackcount} 対  白${whitecount}  ${
+                blackcount === whitecount
+                  ? ' 引き分けです。'
+                  : blackcount > whitecount
+                  ? '黒の勝ちです。'
+                  : '白の勝ちです。'
+              }`
+            );
+          }, 10);
+        }
       }
 
       setBoard(newBoard);
@@ -159,17 +184,17 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
-      <a className={styles.turn}>現在{turnColor === 1 ? '黒' : '白'}のターンです</a>
+      <a className={styles.turn}>現在 {turnColor === 1 ? '黒' : '白'} のターン</a>
       <div className={styles.black}>
         <a className={styles.blackname}>黒{blackCount}個</a>
       </div>
       <div className={styles.white}>
         <a className={styles.whitename}>白{whiteCount}個</a>
       </div>
+      <a href="http://localhost:3000/" className={styles.newgame}>
+        リスタート
+      </a>
       <div className={styles.board}>
-        <div className={styles.pass} style={{ opacity: pass === 2 ? 1 : 0 }}>
-          <h1>パス</h1>
-        </div>
         {board.map((row, y) =>
           row.map((color, x) => (
             <div className={styles.cell} key={`${x}-${y}`} onClick={() => onClick(x, y)}>

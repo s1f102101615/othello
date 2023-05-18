@@ -6,6 +6,7 @@
   height: 100vh;
   min-height: 100vh;
   padding: 0 0.5rem;
+  background-color: #d8d8d8;
 }
 
 .main {
@@ -159,6 +160,8 @@
 .blackname {
   color: rgb(255 255 255);
   z-index: 1;
+  font-size: 200%;
+  font-weight: bold;
 }
 
 .white {
@@ -180,6 +183,8 @@
   z-index: 3;
   top: 160px;
   left: 400px;
+  font-size: 200%;
+  font-weight: bold;
 }
 
 .pass {
@@ -189,7 +194,20 @@
 }
 
 .turn {
+  font-size: 300%;
   position: absolute;
   z-index: 1;
   top: 100px;
+  font-weight: bold;
+}
+
+.newgame {
+  font-size: 150%;
+  position: absolute;
+  padding: 5px;
+  z-index: 1;
+  top: 750px;
+  left: 410px;
+  font-weight: bold;
+  border: 2px solid black;
 }
